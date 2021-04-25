@@ -1,0 +1,43 @@
+plugins {
+    id 'io.qameta.allure' version '2.8.1'
+    id 'java-library'
+}
+
+repositories {
+    maven {url = "https://dl.bintray.com/qameta/maven-unstable/"} //allure testops integrations
+    mavenCentral()
+}
+
+ext.allureVersion = '2.13.8'
+ext.junitVersion = '5.7.1'
+
+allure {
+    version = allureVersion
+    autoconfigure = true
+    aspectjweaver = true
+    useJUnit5 {
+        version = allureVersion
+    }
+}
+
+dependencies {
+    testImplementation([
+            'org.aspectj:aspectjweaver:1.9.6',
+            'io.rest-assured:rest-assured:4.3.1',                    //REST API testing
+            'io.qameta.allure:allure-java-commons:' + allureVersion, //allure reporting
+            'io.qameta.allure:allure-rest-assured:' + allureVersion, //allure listener
+            'org.junit.jupiter:junit-jupiter-api:' + junitVersion
+    ])
+
+    testRuntimeOnly([
+            'org.junit.jupiter:junit-jupiter-engine:' + junitVersion
+    ])
+}
+
+tasks.withType(JavaCompile) {                                          //always readable text in windows
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+}

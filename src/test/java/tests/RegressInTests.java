@@ -4,21 +4,27 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import io.restassured.response.ValidatableResponse;
+import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.concurrent.TimeUnit;
+
 import static io.restassured.RestAssured.given;
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.*;
 import static utils.FileUtils.readStringFromFile;
 
 public class RegressInTests {
 
     @BeforeAll
-    static void setup(){
+    static void setup() {
         RestAssured.filters(new AllureRestAssured());
         RestAssured.baseURI = "https://reqres.in/";
     }
+
 
     @Test
     @DisplayName("Check that GET https://reqres.in/api/users?page=2 has status 200 and support.text ")
@@ -26,12 +32,10 @@ public class RegressInTests {
         given()
                 .when()
                 .get("api/users?page=2")
-        .then()
+                .then()
                 .statusCode(200)
                 .log().body()
                 .body("support.text", is("To keep ReqRes free, contributions towards server costs are appreciated!"));
-
-
     }
 
     @Test
@@ -40,9 +44,9 @@ public class RegressInTests {
         given()
                 .contentType(ContentType.JSON)
                 .body("{\"email\": \"eve.holt@reqres.in\", \"password\": \"cityslicka\" }")
-        .when()
+                .when()
                 .post("api/login")
-        .then()
+                .then()
                 .statusCode(200)
                 .log().body()
                 .body("token", is(notNullValue()));
@@ -78,7 +82,7 @@ public class RegressInTests {
     }
 
     @Test
-    @DisplayName("Successfuly create new user")
+    @DisplayName("Success create new user")
     @Feature("Homework")
     void successfulyCreateNewUser() {
         String data = readStringFromFile("./src/test/resources/new_user.txt");
@@ -93,4 +97,58 @@ public class RegressInTests {
                 .body("name", is("morpheus"));
     }
 
+    @Test
+    @DisplayName("Success update user's job")
+    @Feature("Homework")
+    void successUpdateExistedUser() {
+        String data = readStringFromFile("./src/test/resources/update_user.txt");
+        given()
+                .contentType(ContentType.JSON)
+                .body(data)
+                .when()
+                .post("api/users/2")
+                .then()
+                .statusCode(201)
+                .log().body()
+                .body("job", is("zion resident"));
+    }
+
+    @Test
+    @DisplayName("Success delete the user")
+    @Feature("Homework")
+    void successDeleteExistedUser() {
+        given()
+                .when()
+                .delete("api/users/2")
+                .then()
+                .statusCode(204)
+                .log().body();
+    }
+
+    @Test
+    @DisplayName("Check that user#23 doesn't exist ")
+    @Feature("Homework")
+    void successUnknownUserTest() {
+        given()
+                .when()
+                .get("api/unknown/23")
+                .then()
+                .statusCode(404)
+                .log().body();
+    }
+
+    @Test
+    @DisplayName("Check delayed response with status 200 ")
+    @Feature("Homework")
+    void successDelayedResponseTest() {
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> this.getStatus() == 200);
+    }
+
+    public int getStatus() {
+        return given()
+                .get("api/users?delay=3")
+                .then()
+                .extract()
+                .statusCode();
+    }
 }

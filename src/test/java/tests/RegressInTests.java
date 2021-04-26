@@ -141,6 +141,7 @@ public class RegressInTests {
     @DisplayName("Check delayed response with status 200 ")
     @Feature("Homework")
     void successDelayedResponseTest() {
+        //It was the test for delayed answer using https://github.com/awaitility/awaitility
         Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> this.getStatus() == 200);
     }
 

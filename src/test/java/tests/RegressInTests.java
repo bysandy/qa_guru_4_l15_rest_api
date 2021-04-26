@@ -1,5 +1,6 @@
 package tests;
 
+import io.qameta.allure.Feature;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -8,8 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.*;
 import static utils.FileUtils.readStringFromFile;
 
 public class RegressInTests {
@@ -76,4 +76,21 @@ public class RegressInTests {
                 .log().body()
                 .body("error", is("Missing password"));
     }
+
+    @Test
+    @DisplayName("Successfuly create new user")
+    @Feature("Homework")
+    void successfulyCreateNewUser() {
+        String data = readStringFromFile("./src/test/resources/new_user.txt");
+        given()
+                .contentType(ContentType.JSON)
+                .body(data)
+                .when()
+                .post("api/users")
+                .then()
+                .statusCode(201)
+                .log().body()
+                .body("name", is("morpheus"));
+    }
+
 }

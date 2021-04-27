@@ -4,7 +4,6 @@ import io.qameta.allure.Feature;
 import io.qameta.allure.restassured.AllureRestAssured;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
-import io.restassured.response.ValidatableResponse;
 import org.awaitility.Awaitility;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import java.util.concurrent.TimeUnit;
 
 import static io.restassured.RestAssured.given;
-import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.*;
 import static utils.FileUtils.readStringFromFile;
 

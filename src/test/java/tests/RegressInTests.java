@@ -94,7 +94,7 @@ public class RegressInTests {
                 .then()
                 .statusCode(201)
                 .log().body()
-                .body("name", is("morpheus"));
+                .body("name", is("morpheus"), "job", is("leader"));
     }
 
     @Test
@@ -110,7 +110,7 @@ public class RegressInTests {
                 .then()
                 .statusCode(201)
                 .log().body()
-                .body("job", is("zion resident"));
+                .body("job", is("zion resident"), "name", is("morpheus"));
     }
 
     @Test
@@ -142,12 +142,12 @@ public class RegressInTests {
     @Feature("Homework")
     void successDelayedResponseTest() {
         //It was the test for delayed answer using https://github.com/awaitility/awaitility
-        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> this.getStatus() == 200);
+        Awaitility.await().atMost(10, TimeUnit.SECONDS).until(() -> this.getStatus("api/users?delay=3") == 200);
     }
 
-    public int getStatus() {
+    public int getStatus(String path) {
         return given()
-                .get("api/users?delay=3")
+                .get(path)
                 .then()
                 .extract()
                 .statusCode();

@@ -13,6 +13,9 @@
 # Properties files
 *.properties
 
+#res-assured logs
+ajcore.*.txt
+
 # Package Files #
 *.jar
 *.war

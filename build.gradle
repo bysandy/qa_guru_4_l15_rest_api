@@ -24,7 +24,7 @@ dependencies {
     testImplementation([
             'org.aspectj:aspectjweaver:1.9.6',
             'org.awaitility:awaitility:3.0.0',                       //Add possibility to test asynchronous systems
-            'io.rest-assured:rest-assured:4.3.1',                    //REST API testing
+            'io.rest-assured:rest-assured:4.3.3',                    //REST API testing
             'io.qameta.allure:allure-java-commons:' + allureVersion, //allure reporting
             'io.qameta.allure:allure-rest-assured:' + allureVersion, //allure listener
             'org.junit.jupiter:junit-jupiter-api:' + junitVersion
